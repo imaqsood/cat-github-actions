@@ -41,11 +41,11 @@ jobs:
           echo "Retry count has reached the limit"
           echo "::set-output name=should_retry::false"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SOURCE_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Re-run failed jobs
         if: ${{ steps.check-retry.outputs.should_retry == 'true' }}
         run: gh run rerun --failed ${{ inputs.run_id }} --repo ${{ inputs.repo }}
         continue-on-error: true
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SOURCE_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
