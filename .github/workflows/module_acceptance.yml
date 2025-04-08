@@ -54,8 +54,14 @@ jobs:
       - name: Setup Test Matrix
         id: get-matrix
         run: |
-          bundle exec matrix_from_metadata_v2 ${{ inputs.flags }}
-
+         matrix_output=$(bundle exec matrix_from_metadata_v2 | jq -c '{
+            matrix: {
+              platforms: (if .matrix.platforms | length > 0 then [ .matrix.platforms[0] ] else [] end),
+              collection: .matrix.collection
+            },
+            spec_matrix: .spec_matrix
+          }')
+          echo "matrix=$matrix_output" >> $GITHUB_OUTPUT
   acceptance:
     name: "Acceptance tests (${{matrix.platforms.label}}, ${{matrix.collection}})"
     needs: "setup_matrix"
